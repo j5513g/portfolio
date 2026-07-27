@@ -1,151 +1,319 @@
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import { NavLink, Route, Routes } from 'react-router-dom'
 
 const tags = ['crochet', 'travel', 'robotics', 'volunteering', 'life']
 
 const posts = [
   {
     title: 'first robotics comp weekend',
-    date: 'april 2025',
+    day: '12',
+    month: 'apr',
+    year: '2025',
+    tag: 'robotics',
     blurb: 'a messy, wonderful weekend full of late nights, tiny victories, and a lot of heart.',
+    imageClass: 'journal-image journal-image--sage',
+    tilt: -1.2,
   },
   {
     title: 'my first crochet piece',
-    date: 'january 2025',
+    day: '03',
+    month: 'jan',
+    year: '2025',
+    tag: 'crochet',
     blurb: 'a soft little square that somehow became the start of a whole new creative habit.',
+    imageClass: 'journal-image journal-image--rose',
+    tilt: 1.3,
   },
   {
     title: 'birthday trip to the coast',
-    date: 'november 2024',
+    day: '21',
+    month: 'nov',
+    year: '2024',
+    tag: 'travel',
     blurb: 'salt air, warm lights, and the feeling that life was finally slowing down enough to notice.',
+    imageClass: 'journal-image journal-image--cream',
+    tilt: -0.8,
+  },
+  {
+    title: 'community volunteer day',
+    day: '08',
+    month: 'oct',
+    year: '2024',
+    tag: 'volunteering',
+    blurb: 'a day of folding boxes, laughing a lot, and making small things feel important.',
+    imageClass: 'journal-image journal-image--sage',
+    tilt: 1.1,
   },
 ]
 
 const roles = [
-  { title: 'student lead', org: 'robotics club', years: '2023–present' },
-  { title: 'volunteer coordinator', org: 'community nonprofit', years: '2022–2024' },
-  { title: 'creative assistant', org: 'school arts collective', years: '2021–2022' },
+  { title: 'student lead', org: 'robotics club', years: '2023–present', tilt: -1.1 },
+  { title: 'volunteer coordinator', org: 'community nonprofit', years: '2022–2024', tilt: 1.2 },
+  { title: 'creative assistant', org: 'school arts collective', years: '2021–2022', tilt: -0.7 },
 ]
 
 function App() {
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
+  const [cursorActive, setCursorActive] = useState(false)
+  const [trail, setTrail] = useState<Array<{ x: number; y: number; id: number }>>([])
+  const pointerRef = useRef({ x: 0, y: 0 })
+
+  useEffect(() => {
+    const move = (event: MouseEvent) => {
+      pointerRef.current = { x: event.clientX, y: event.clientY }
+      setCursorPos({ x: event.clientX, y: event.clientY })
+    }
+
+    let frame = 0
+    const tick = () => {
+      setTrail((prev) => {
+        const next = [...prev, { x: pointerRef.current.x, y: pointerRef.current.y, id: Date.now() + Math.random() }]
+        return next.slice(-6)
+      })
+      frame = window.requestAnimationFrame(tick)
+    }
+
+    window.addEventListener('mousemove', move)
+    frame = window.requestAnimationFrame(tick)
+
+    return () => {
+      window.cancelAnimationFrame(frame)
+      window.removeEventListener('mousemove', move)
+    }
+  }, [])
+
   return (
-    <div className="min-h-screen bg-transparent px-4 py-6 text-[#f5ebdd] sm:px-6 lg:px-8">
-      <div className="mx-auto flex max-w-6xl flex-col gap-6">
-        <header className="overflow-hidden rounded-[2rem] border border-[#3a2e3a] bg-[#201b24]/90 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.28)] backdrop-blur md:p-8">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-2xl space-y-4">
-              <p className="text-sm uppercase tracking-[0.35em] text-[#c9838d]">about / contact / journal</p>
-              <h1 className="text-4xl font-semibold lowercase leading-tight sm:text-5xl">
-                hi, i’m a curious creative with a soft spot for making things feel a little magical.
-              </h1>
-              <p className="max-w-xl text-base text-[#d9b9b2] sm:text-lg">
-                i’m building a portfolio that feels like a dreamy little archive of my life: projects, milestones, volunteer work, and all the tiny moments that matter.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <a
-                  href="#contact"
-                  className="rounded-full border border-[#c9838d]/70 px-4 py-2 text-sm transition hover:-translate-y-0.5 hover:bg-[#c9838d]/20"
-                >
-                  get in touch
-                </a>
-                <a
-                  href="#journal"
-                  className="rounded-full border border-[#8fa08a]/70 px-4 py-2 text-sm transition hover:-translate-y-0.5 hover:bg-[#8fa08a]/20"
-                >
-                  see my journal
-                </a>
-              </div>
-            </div>
+    <div className="app-shell">
+      <div
+        className={`cursor-dot ${cursorActive ? 'cursor-dot--active' : ''}`}
+        style={{ transform: `translate(${cursorPos.x}px, ${cursorPos.y}px)` }}
+      />
+      {trail.map((point, index) => (
+        <div
+          key={point.id}
+          className="cursor-trail"
+          style={{
+            transform: `translate(${point.x}px, ${point.y}px)`,
+            opacity: 0.16 + (index / 6) * 0.2,
+          }}
+        />
+      ))}
 
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45 }}
-              className="rounded-[1.5rem] border border-[#8f7aa8]/50 bg-[#17141a]/80 p-5 shadow-inner"
-            >
-              <p className="text-sm uppercase tracking-[0.3em] text-[#cba36a]">currently into</p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full border border-[#3a2e3a] bg-[#201b24] px-3 py-1 text-sm text-[#f5ebdd]"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </header>
+      <nav className="top-nav">
+        <div className="brand">jia • portfolio</div>
+        <div className="nav-links">
+          <NavLink to="/" end className={({ isActive }) => `nav-link ${isActive ? 'nav-link--active' : ''}`}>
+            about
+          </NavLink>
+          <NavLink to="/journal" className={({ isActive }) => `nav-link ${isActive ? 'nav-link--active' : ''}`}>
+            journal
+          </NavLink>
+          <NavLink to="/experience" className={({ isActive }) => `nav-link ${isActive ? 'nav-link--active' : ''}`}>
+            experience
+          </NavLink>
+          <NavLink to="/contact" className={({ isActive }) => `nav-link ${isActive ? 'nav-link--active' : ''}`}>
+            contact
+          </NavLink>
+        </div>
+      </nav>
 
-        <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-          <motion.article
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.08, duration: 0.4 }}
-            className="rounded-[1.5rem] border border-[#3a2e3a] bg-[#201b24]/80 p-6"
-          >
-            <p className="text-sm uppercase tracking-[0.3em] text-[#8f7aa8]">about me</p>
-            <h2 className="mt-3 text-2xl lowercase text-[#f5ebdd]">a little about who i am</h2>
-            <p className="mt-3 text-[#d9b9b2]">
-              i’m someone who loves building things, showing up for others, and collecting meaningful memories along the way. whether it’s robotics, volunteering, or making something tiny with my hands, i like work that feels personal and honest.
-            </p>
-          </motion.article>
-
-          <motion.article
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.12, duration: 0.4 }}
-            className="rounded-[1.5rem] border border-[#3a2e3a] bg-[#201b24]/80 p-6"
-          >
-            <p className="text-sm uppercase tracking-[0.3em] text-[#cba36a]">contact</p>
-            <h2 id="contact" className="mt-3 text-2xl lowercase text-[#f5ebdd]">let’s talk</h2>
-            <p className="mt-3 text-[#d9b9b2]">email me at hello@yourname.com</p>
-            <p className="mt-2 text-[#d9b9b2]">instagram • linkedin • github</p>
-          </motion.article>
-        </section>
-
-        <section id="journal" className="rounded-[1.8rem] border border-[#3a2e3a] bg-[#201b24]/80 p-6">
-          <div className="mb-5 flex items-center justify-between">
-            <div>
-              <p className="text-sm uppercase tracking-[0.3em] text-[#8fa08a]">journal</p>
-              <h2 className="mt-1 text-2xl lowercase text-[#f5ebdd]">milestones and memories</h2>
-            </div>
-            <button className="rounded-full border border-[#c9838d]/60 px-3 py-2 text-sm transition hover:bg-[#c9838d]/20">
-              filter by tag
-            </button>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            {posts.map((post) => (
-              <motion.article
-                key={post.title}
-                whileHover={{ y: -4, scale: 1.01 }}
-                transition={{ type: 'spring', stiffness: 220, damping: 18 }}
-                className="rounded-[1.25rem] border border-[#3a2e3a] bg-[#17141a]/80 p-4"
-              >
-                <p className="text-sm uppercase tracking-[0.25em] text-[#cba36a]">{post.date}</p>
-                <h3 className="mt-2 text-xl lowercase text-[#f5ebdd]">{post.title}</h3>
-                <p className="mt-2 text-sm text-[#d9b9b2]">{post.blurb}</p>
-              </motion.article>
-            ))}
-          </div>
-        </section>
-
-        <section className="rounded-[1.8rem] border border-[#3a2e3a] bg-[#201b24]/80 p-6">
-          <p className="text-sm uppercase tracking-[0.3em] text-[#c9838d]">experience</p>
-          <h2 className="mt-1 text-2xl lowercase text-[#f5ebdd]">roles and organizations</h2>
-          <div className="mt-5 grid gap-4 md:grid-cols-3">
-            {roles.map((role) => (
-              <div key={`${role.org}-${role.title}`} className="rounded-[1.1rem] border border-[#3a2e3a] bg-[#17141a]/70 p-4">
-                <p className="text-sm uppercase tracking-[0.2em] text-[#8f7aa8]">{role.years}</p>
-                <h3 className="mt-2 text-lg lowercase text-[#f5ebdd]">{role.title}</h3>
-                <p className="mt-1 text-sm text-[#d9b9b2]">{role.org}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
+      <main className="page-wrap">
+        <Routes>
+          <Route path="/" element={<HomePage setCursorActive={setCursorActive} />} />
+          <Route path="/journal" element={<JournalPage setCursorActive={setCursorActive} />} />
+          <Route path="/experience" element={<ExperiencePage setCursorActive={setCursorActive} />} />
+          <Route path="/contact" element={<ContactPage setCursorActive={setCursorActive} />} />
+        </Routes>
+      </main>
     </div>
+  )
+}
+
+function HomePage({ setCursorActive }: { setCursorActive: (value: boolean) => void }) {
+  return (
+    <>
+      <motion.section
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35 }}
+        className="hero-card"
+      >
+        <p className="eyebrow">soft things, bright ideas, a little bit of chaos</p>
+        <h1>hi, i’m jia — a dreamy maker collecting tiny milestones in a big, lovely life.</h1>
+        <p className="lead">
+          this is my little scrapbook of everything that matters: the projects, the people, the wins, the awkward bright moments.
+        </p>
+        <div className="hero-actions">
+          <a
+            href="/contact"
+            className="pill"
+            onMouseEnter={() => setCursorActive(true)}
+            onMouseLeave={() => setCursorActive(false)}
+          >
+            say hello
+          </a>
+          <a
+            href="/journal"
+            className="pill pill--alt"
+            onMouseEnter={() => setCursorActive(true)}
+            onMouseLeave={() => setCursorActive(false)}
+          >
+            browse the journal
+          </a>
+        </div>
+      </motion.section>
+
+      <section className="card-grid">
+        <motion.article
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.08, duration: 0.35 }}
+          className="info-card tilt-card"
+        >
+          <p className="eyebrow">about me</p>
+          <h2>a little about who i am</h2>
+          <p>
+            i love building things that feel personal, showing up for the people around me, and turning ordinary days into small, meaningful memories.
+          </p>
+        </motion.article>
+
+        <motion.article
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.12, duration: 0.35 }}
+          className="info-card tilt-card tilt-card--alt"
+        >
+          <p className="eyebrow">currently into</p>
+          <div className="tag-row">
+            {tags.map((tag) => (
+              <span key={tag} className="tag-chip">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </motion.article>
+      </section>
+    </>
+  )
+}
+
+function JournalPage({ setCursorActive }: { setCursorActive: (value: boolean) => void }) {
+  const [activeTag, setActiveTag] = useState('all')
+  const [selectedPost, setSelectedPost] = useState<string | null>(null)
+  const [hoveredPost, setHoveredPost] = useState<string | null>(null)
+  const filteredPosts = activeTag === 'all' ? posts : posts.filter((post) => post.tag === activeTag)
+
+  return (
+    <section className="page-card">
+      <div className="page-heading">
+        <div>
+          <p className="eyebrow">journal</p>
+          <h2>milestones, little wins, and lovely days</h2>
+        </div>
+        <div className="tag-row tag-row--wrap">
+          <button className={`tag-chip ${activeTag === 'all' ? 'tag-chip--active' : ''}`} onClick={() => setActiveTag('all')}>
+            all
+          </button>
+          {tags.map((tag) => (
+            <button
+              key={tag}
+              className={`tag-chip ${activeTag === tag ? 'tag-chip--active' : ''}`}
+              onClick={() => setActiveTag(tag)}
+              onMouseEnter={() => setCursorActive(true)}
+              onMouseLeave={() => setCursorActive(false)}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="post-grid">
+        {filteredPosts.map((post) => {
+          const isSelected = selectedPost === post.title
+          const isHovered = hoveredPost === post.title
+          return (
+            <article
+              key={post.title}
+              className={`post-card ${isSelected ? 'post-card--selected' : ''} ${isHovered ? 'post-card--hovered' : ''}`}
+              style={{ rotate: isSelected || isHovered ? '0deg' : `${post.tilt}deg` }}
+              onClick={() => setSelectedPost(isSelected ? null : post.title)}
+              onMouseEnter={() => {
+                setHoveredPost(post.title)
+                setCursorActive(true)
+              }}
+              onMouseLeave={() => {
+                setHoveredPost(null)
+                setCursorActive(false)
+              }}
+            >
+              <div className={`journal-image-wrap ${post.imageClass}`}>
+                <div className="journal-date-stamp">
+                  <span>{post.day}</span>
+                  <small>{post.month}</small>
+                  <strong>{post.year}</strong>
+                </div>
+              </div>
+              <div className="post-card-body">
+                <p className="post-topic">{post.tag}</p>
+                <h3>{post.title}</h3>
+                <p>{post.blurb}</p>
+              </div>
+            </article>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
+function ExperiencePage({ setCursorActive }: { setCursorActive: (value: boolean) => void }) {
+  const [selectedRole, setSelectedRole] = useState<string | null>(null)
+
+  return (
+    <section className="page-card">
+      <p className="eyebrow">experience</p>
+      <h2>roles, organizations, and the years in between</h2>
+      <div className="timeline">
+        {roles.map((role) => {
+          const isSelected = selectedRole === `${role.org}-${role.title}`
+          return (
+            <motion.article
+              key={`${role.org}-${role.title}`}
+              whileHover={{ x: 4 }}
+              className={`timeline-card ${isSelected ? 'timeline-card--selected' : ''}`}
+              style={{ rotate: isSelected ? '0deg' : `${role.tilt}deg` }}
+              onClick={() => setSelectedRole(isSelected ? null : `${role.org}-${role.title}`)}
+              onMouseEnter={() => setCursorActive(true)}
+              onMouseLeave={() => setCursorActive(false)}
+            >
+              <p className="post-date">{role.years}</p>
+              <h3>{role.title}</h3>
+              <p>{role.org}</p>
+            </motion.article>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
+function ContactPage({ setCursorActive }: { setCursorActive: (value: boolean) => void }) {
+  return (
+    <section className="page-card contact-card">
+      <p className="eyebrow">contact</p>
+      <h2>let’s make something soft and lovely together</h2>
+      <p>email me at hello@jia.com</p>
+      <div className="hero-actions">
+        <a href="mailto:hello@jia.com" className="pill" onMouseEnter={() => setCursorActive(true)} onMouseLeave={() => setCursorActive(false)}>
+          email me
+        </a>
+        <a href="https://www.instagram.com" className="pill pill--alt" onMouseEnter={() => setCursorActive(true)} onMouseLeave={() => setCursorActive(false)}>
+          instagram
+        </a>
+      </div>
+    </section>
   )
 }
 
