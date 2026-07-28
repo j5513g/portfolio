@@ -1,119 +1,112 @@
-## Portfolio website plan
+# Indie Portfolio Website Plan
 
-This is the direction I’d recommend for your site: a dark, soft, indie-cute portfolio that feels editorial and a little dreamy, while still being polished and modern. The mood should be close to your favorite references: grainy textures, lowercase typography, layered cards, and a playful but calm feel.
+## What you're building
 
-### 1. Best stack for a beginner
-I’d suggest:
-- React + TypeScript with Vite
-- Tailwind CSS for styling
-- Framer Motion for smooth animations
-- Local JSON or Markdown files for blog posts first
-- Vercel for easy deployment
+A multi-page portfolio blending your favorite references:
 
-This gives you a professional-looking site without making the setup too complicated.
+- **Alazanto in 2005.jpeg** — red / blue / tan contrast, 3-column journal layout, keyword filter sidebar, italic serif post titles
+- **_.jpeg** and **_ (3).jpeg** — modular scrapbook cards, sticker-style photos, lowercase nav, dark cozy panels
+- **_ (4).jpeg** — grainy texture, retro-cute personality, changelog-style updates
 
-### 2. Suggested layout
-I’d structure it like this:
+Start fresh with dark + Alazanto design (old light-mode prototype was removed in "restarted" commit).
 
-1. Home / About
-- Short intro
-- Who you are
-- Quick contact links
-- A cute visual or portrait section
+## Stack
 
-2. Journal / Blog
-- A grid of milestone cards
-- Each entry includes image, title, date, short text, and tags
-- Filter chips for categories like crochet, travel, robotics, competitions, volunteering, nonprofit, life, birthdays
+| Tool | Why |
+|------|-----|
+| React + TypeScript + Vite | Fast dev, industry standard |
+| Tailwind CSS v4 | Quick styling |
+| Framer Motion | Animations |
+| React Router | Pages: home, journal, experience, contact, admin |
+| Supabase | DB + image storage + auth for `/admin` |
+| Vercel | Free hosting |
 
-3. Experience / Roles
-- A LinkedIn-style timeline or card list of organizations and roles you’ve had over the years
+## Site layout
 
-4. Contact
-- Email, socials, and a simple final note
+1. **Home** — about me, contact, 3-column (red decor | tan content | blue sidebar), mouse-following orb
+2. **Journal** — milestone cards with image/title/date/tags, filter sidebar
+3. **Experience** — roles, leadership, certifications (tabs)
+4. **Contact** — email, socials
+5. **Admin** (`/admin`) — password-protected upload: image, text, date, tags
 
-### 3. Visual direction
-Your site should feel:
-- dark mode
-- soft and feminine
-- indie and a little whimsical
-- slightly editorial and textured
+## Color palette
 
-### 4. Color palette
-A good starting palette would be:
-- Background: deep charcoal / espresso — #17141A
-- Main text: soft cream — #F5EBDD
-- Secondary text / muted blush: #D9B9B2
-- Accent rose: muted pink — #C9838D
-- Accent lilac: dusty purple — #8F7AA8
-- Accent sage: soft green — #8FA08A
-- Accent warm gold: subtle glow — #CBA36A
-- Card surface / panel: #201B24
-- Border / subtle outline: #3A2E3A
-- Highlight glow: #E9C3A6 with 20–30% opacity
+| Role | Hex | Usage |
+|------|-----|-------|
+| Page background | `#1A1614` | Dark canvas |
+| Content panel | `#E8DCC8` | Tan cards |
+| Panel text | `#2A2018` | Body on tan |
+| Left accent | `#9E3B30` | Red sidebar |
+| Right accent | `#5B7FA3` | Blue sidebar |
+| Dark card | `#241F1C` | Nav, dark sections |
+| Muted text | `#A89888` | Secondary |
+| Glow | `#CBA36A` | Hover states |
 
-That keeps it easy on the eyes while still feeling cute and thoughtful.
+## Typography
 
-### 5. Design choices that will make it feel special
-- Add a subtle grain/noise overlay for that tactile, aesthetic look
-- Use lowercase typography with a soft serif for headings and a rounded sans-serif for body text
-- Make the layout a little asymmetrical and collage-like
-- Add a custom cursor that feels playful and theme-matching
-- Use hover effects with glow, soft movement, and button emphasis
-- Add gentle scroll reveals and tiny animations so it feels alive without being overwhelming
+- Titles: **Cormorant Garamond** or **Lora** — *italic serif*
+- Body: **Lora** — regular serif
+- Nav/tags/buttons: **IBM Plex Mono** — lowercase monospace
 
-### 6. Build plan
-1. Set up the project and basic navigation
-2. Build the home/about page and contact section
-3. Create the blog card system and tag filters
-4. Add the experience/roles section
-5. Add the custom cursor, hover polish, and motion effects
-6. Test responsiveness and publish
+## Supabase tables
 
-### 7. Phase structure
-#### Phase 0: Get everything installed
-- Tools: Node.js, npm or pnpm, VS Code, Vite, Tailwind CSS, Framer Motion
-- What to do:
-  - Install Node.js if you do not already have it
-  - Create the Vite React + TypeScript app
-  - Install Tailwind, Framer Motion, and any icon package you want
-  - Make sure the project runs locally before styling anything
+**journal_posts:** id, title, body, image_url, date, tags (text[]), created_at
 
-#### Phase 1: Basic design foundation
-- Tools: Tailwind CSS, Google Fonts, Figma or Canva for moodboarding
-- What to do:
-  - Set up the dark mode color system using the hex palette above
-  - Create the page shell with a sticky nav and simple section layout
-  - Pick your fonts: a soft serif for headings and a rounded sans-serif for body text
-  - Build the first version of the hero/about section and the contact section
-  - Add the grainy background texture and soft card styling
+**experience_roles:** id, title, organization, start_date, end_date, description, type (`role`|`leadership`|`certification`), sort_order
 
-#### Phase 2: Make the site functional
-- Tools: React components, local JSON or Markdown files, TypeScript
-- What to do:
-  - Create reusable components for the hero, blog cards, filter chips, and experience cards
-  - Build the blog section with sample entries and category tags
-  - Add filtering so visitors can click crochet, travel, robotics, volunteering, life, and other tags
-  - Create the experience/roles section with a timeline or card layout
-  - Make sure the content is easy to edit later
+RLS: public read, authenticated write.
 
-#### Phase 3: Add the fun interactive details
-- Tools: CSS, Framer Motion, custom React hooks
-- What to do:
-  - Build a custom cursor that matches the vibe of the site
-  - Add hover states to buttons, cards, and links with highlight glow and motion
-  - Add scroll reveal animations and subtle transitions between sections
-  - Add tiny decorative details like floating shapes, soft blur effects, or sparkly accents
-  - Keep the motion intentional so it feels cute and polished instead of chaotic
+## Project structure
 
-#### Phase 4: Polish and publish
-- Tools: Vercel, browser dev tools, Lighthouse
-- What to do:
-  - Check mobile responsiveness and fix layout issues
-  - Make sure the text is readable and the contrast is comfortable
-  - Optimize images and animations so the site loads smoothly
-  - Deploy the site to Vercel and share the link
-  - Add your real content, photos, and contact info
+```
+portfolio/
+├── portfolio-design/
+├── portfolio-site/
+│   ├── public/
+│   ├── src/
+│   │   ├── lib/supabase.ts
+│   │   ├── pages/ (Home, Journal, Experience, Contact, Admin)
+│   │   └── components/
+│   └── supabase/schema.sql
+├── plan.md
+└── README.md
+```
 
-### 8. My recommendation
-Start with a polished single-page version first. That will already look impressive and be much easier to build than jumping straight into a huge multi-page CMS setup.
+## Build phases
+
+### Phase 0 — Setup
+1. Node.js v20+
+2. Scaffold Vite React + TS app
+3. Install Tailwind, Framer Motion, React Router, Supabase
+4. Create Supabase project, run schema.sql, create storage bucket
+5. Confirm `npm run dev` works
+
+### Phase 1 — Design foundation (~2–3 hrs)
+CSS variables, grain overlay, nav, 3-column home shell, fonts
+
+### Phase 2 — Core pages (~3–4 hrs)
+Journal + filters, Experience tabs, Contact, sample data
+
+### Phase 3 — Admin (~2–3 hrs)
+Supabase Auth, `/admin` login, post + experience forms
+
+### Phase 4 — Polish (~2–3 hrs)
+Custom cursor, floating orb, hovers, scroll reveals, sticker photos
+
+### Phase 5 — Deploy (~1–2 hrs)
+Real content, responsive test, Vercel + env vars
+
+## Env vars
+
+```
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+```
+
+Store in `portfolio-site/.env.local` (never commit).
+
+## Images to provide later
+
+Profile photo, decorative sidebar graphic, journal photos, cert badges, favicon.
+
+## Estimated time: ~12–16 hours total

@@ -1,16 +1,8 @@
 # Portfolio Site
 
-This folder contains a React + TypeScript portfolio website with a dreamy, dark-mode aesthetic and a journal-style blog experience.
+React + TypeScript portfolio (see [plan.md](../plan.md)).
 
-## Project structure
-
-- portfolio-site/ — the Vite app for the website
-- portfolio-design/ — reference design images
-- plan.md — project planning notes
-
-## Run locally
-
-From the app folder:
+## Phase 0 — run locally
 
 ```bash
 cd portfolio-site
@@ -18,20 +10,18 @@ npm install
 npm run dev
 ```
 
-The site should open at http://localhost:5173/.
+Open http://localhost:5173/
 
-## Build for production
+## Supabase setup
 
-```bash
-cd portfolio-site
-npm run build
-```
+1. Create a project at [supabase.com](https://supabase.com)
+2. Run [`supabase/schema.sql`](supabase/schema.sql) in SQL Editor
+3. Create Storage bucket `journal-images` (public)
+4. Copy `.env.example` → `.env.local` and add your URL + anon key
+5. In Authentication, create your admin user (email + password)
 
-## Preview the production build
+## Scripts
 
-```bash
-cd portfolio-site
-npm run preview
-```
-
-The preview server will run at http://localhost:4173/.
+- `npm run dev` — local dev server
+- `npm run build` — production build
+- `npm run preview` — preview production build
