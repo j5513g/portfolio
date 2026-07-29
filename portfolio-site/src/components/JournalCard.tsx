@@ -1,5 +1,5 @@
 import type { JournalPost } from '../lib/supabase'
-import { tagColors } from '../data/sample'
+import { tagColor } from '../data/tags'
 
 const imageTints = ['#8fa08a', '#c9838d', '#6b8fad', '#cba36a', '#9e3b30']
 
@@ -37,7 +37,7 @@ export default function JournalCard({ post, index, expanded, onToggle }: Props) 
               <span
                 key={tag}
                 className="mono rounded-full px-2 py-0.5 text-xs text-[var(--cream)]"
-                style={{ background: tagColors[tag] ?? 'var(--blue)' }}
+                style={{ background: tagColor(tag) }}
               >
                 {tag}
               </span>

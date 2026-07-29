@@ -1,7 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ExperienceTimeline from '../components/ExperienceTimeline'
-import { sampleExperience } from '../data/sample'
-import type { ExperienceRole } from '../lib/supabase'
+import { supabase, type ExperienceRole } from '../lib/supabase'
 
 const tabs: { key: ExperienceRole['type']; label: string }[] = [
   { key: 'role', label: 'roles' },
@@ -11,7 +10,16 @@ const tabs: { key: ExperienceRole['type']; label: string }[] = [
 
 export default function Experience() {
   const [tab, setTab] = useState<ExperienceRole['type']>('role')
-  const items = sampleExperience.filter((e) => e.type === tab).sort((a, b) => a.sort_order - b.sort_order)
+  const [items, setItems] = useState<ExperienceRole[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!supabase) { setLoading(false); return }
+    supabase.from('experience_roles').select('*').order('sort_order')
+      .then(({ data }) => { setItems(data ?? []); setLoading(false) })
+  }, [])
+
+  const filtered = items.filter((e) => e.type === tab)
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
@@ -37,7 +45,11 @@ export default function Experience() {
         ))}
       </div>
 
-      <ExperienceTimeline items={items} />
+      {loading ? (
+        <p className="mono text-[var(--muted)]">loading…</p>
+      ) : (
+        <ExperienceTimeline items={filtered} />
+      )}
     </div>
   )
 }

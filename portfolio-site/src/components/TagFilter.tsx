@@ -1,4 +1,4 @@
-import { tagColors } from '../data/sample'
+import { tagColor } from '../data/tags'
 
 type Props = {
   tags: string[]
@@ -31,7 +31,7 @@ export default function TagFilter({ tags, active, onSelect }: Props) {
             >
               <span
                 className="mr-2 inline-block h-2 w-2 rounded-full"
-                style={{ background: tagColors[tag] ?? 'var(--glow)' }}
+                style={{ background: tagColor(tag) }}
               />
               {tag}
             </button>
