@@ -16,16 +16,17 @@ export default function JournalCard({ post, index, expanded, onToggle }: Props) 
 
   return (
     <article
-      className="rounded-xl bg-[var(--panel)] p-4 text-[var(--panel-text)] transition hover:shadow-lg sm:p-5"
+      className="card-hover rounded-xl bg-[var(--panel)] p-4 text-[var(--panel-text)] sm:p-5"
       style={{ transform: `rotate(${tilt})` }}
+      data-cursor="hover"
     >
       <div className="flex flex-col gap-4 sm:flex-row">
         <div
-          className="photo-grain relative h-36 w-full shrink-0 overflow-hidden rounded-sm border-4 border-white shadow-md sm:h-32 sm:w-28"
+          className="photo-grain relative h-36 w-full shrink-0 overflow-hidden rounded-sm border-4 border-white shadow-md transition-transform duration-300 group-hover:scale-105 sm:h-32 sm:w-28"
           style={{ background: tint }}
         >
           {post.image_url && (
-            <img src={post.image_url} alt="" className="h-full w-full object-cover" />
+            <img src={post.image_url} alt="" className="h-full w-full object-cover transition-transform duration-300 hover:scale-105" />
           )}
         </div>
         <div className="min-w-0 flex-1">
@@ -36,7 +37,7 @@ export default function JournalCard({ post, index, expanded, onToggle }: Props) 
             {post.tags.map((tag) => (
               <span
                 key={tag}
-                className="mono rounded-full px-2 py-0.5 text-xs text-[var(--cream)]"
+                className="mono rounded-full px-2 py-0.5 text-xs text-[var(--cream)] transition-transform hover:scale-110"
                 style={{ background: tagColor(tag) }}
               >
                 {tag}
@@ -44,11 +45,7 @@ export default function JournalCard({ post, index, expanded, onToggle }: Props) 
             ))}
           </div>
           {onToggle && (
-            <button
-              type="button"
-              onClick={onToggle}
-              className="mono mt-3 text-xs text-[var(--blue)] hover:underline"
-            >
+            <button type="button" onClick={onToggle} className="mono mt-3 text-xs text-[var(--blue)] hover:underline">
               {expanded ? 'show less ↑' : 'read more →'}
             </button>
           )}

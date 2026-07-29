@@ -56,6 +56,97 @@ h3,
   letter-spacing: 0.03em;
 }
 
+body.custom-cursor,
+body.custom-cursor a,
+body.custom-cursor button {
+  cursor: none;
+}
+
+.cursor-dot,
+.cursor-trail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 10000;
+  border-radius: 50%;
+  margin: -6px 0 0 -6px;
+}
+
+.cursor-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--cream);
+  mix-blend-mode: difference;
+  transition: transform 0.15s, width 0.15s, height 0.15s, margin 0.15s;
+}
+
+.cursor-dot--active {
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  background: var(--glow);
+  mix-blend-mode: normal;
+  box-shadow: 0 0 16px var(--glow);
+}
+
+.cursor-trail {
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  background: var(--red);
+  opacity: 0.2;
+}
+
+.btn-glow {
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s, border-color 0.2s, color 0.2s;
+}
+.btn-glow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(203, 163, 106, 0.35);
+}
+
+.nav-link-hover {
+  position: relative;
+}
+.nav-link-hover::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background: var(--glow);
+  transition: width 0.25s, left 0.25s;
+}
+.nav-link-hover:hover::after {
+  width: 70%;
+  left: 15%;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(12deg); }
+  50% { transform: translateY(-8px) rotate(12deg); }
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card-hover:hover {
+  transform: rotate(0deg) scale(1.02) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.sticker {
+  transition: transform 0.3s ease;
+}
+.sticker:hover {
+  transform: rotate(0deg) scale(1.04);
+}
+
 .grain::after {
   content: '';
   position: fixed;

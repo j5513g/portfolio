@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import FadeIn from '../components/FadeIn'
 import JournalCard from '../components/JournalCard'
 import TagFilter from '../components/TagFilter'
 import { supabase, type JournalPost } from '../lib/supabase'
@@ -23,10 +24,12 @@ export default function Journal() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      <header className="mb-8">
-        <h1 className="title-serif text-4xl text-[var(--cream)] sm:text-5xl">journal</h1>
-        <p className="mono mt-2 text-sm text-[var(--muted)]">milestones, memories, and little wins</p>
-      </header>
+      <FadeIn>
+        <header className="mb-8">
+          <h1 className="title-serif text-4xl text-[var(--cream)] sm:text-5xl">journal</h1>
+          <p className="mono mt-2 text-sm text-[var(--muted)]">milestones, memories, and little wins</p>
+        </header>
+      </FadeIn>
 
       {loading ? (
         <p className="mono text-[var(--muted)]">loading…</p>
@@ -39,13 +42,14 @@ export default function Journal() {
               </p>
             ) : (
               filtered.map((post, i) => (
-                <JournalCard
-                  key={post.id}
-                  post={post}
-                  index={i}
-                  expanded={expandedId === post.id}
-                  onToggle={() => setExpandedId(expandedId === post.id ? null : post.id)}
-                />
+                <FadeIn key={post.id} delay={i * 0.06}>
+                  <JournalCard
+                    post={post}
+                    index={i}
+                    expanded={expandedId === post.id}
+                    onToggle={() => setExpandedId(expandedId === post.id ? null : post.id)}
+                  />
+                </FadeIn>
               ))
             )}
           </div>

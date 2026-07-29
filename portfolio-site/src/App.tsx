@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import CustomCursor from './components/CustomCursor'
 import Nav from './components/Nav'
 import Admin from './pages/Admin'
 import Contact from './pages/Contact'
@@ -10,6 +11,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="grain min-h-screen bg-[var(--bg)]">
+        <CustomCursor />
         <Nav />
         <main>
           <Routes>

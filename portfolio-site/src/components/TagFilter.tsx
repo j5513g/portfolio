@@ -13,7 +13,8 @@ export default function TagFilter({ tags, active, onSelect }: Props) {
       <button
         type="button"
         onClick={() => onSelect(null)}
-        className={`mono mb-3 block w-full rounded-lg px-3 py-2 text-left text-sm transition ${
+        data-cursor="hover"
+        className={`mono mb-3 block w-full rounded-lg px-3 py-2 text-left text-sm transition hover:scale-[1.02] ${
           active === null ? 'bg-[var(--cream)] text-[var(--panel-text)]' : 'hover:bg-black/15'
         }`}
       >
@@ -25,14 +26,12 @@ export default function TagFilter({ tags, active, onSelect }: Props) {
             <button
               type="button"
               onClick={() => onSelect(tag === active ? null : tag)}
-              className={`w-full rounded-lg px-3 py-2 text-left text-sm transition ${
+              data-cursor="hover"
+              className={`w-full rounded-lg px-3 py-2 text-left text-sm transition hover:scale-[1.02] ${
                 active === tag ? 'bg-[var(--cream)] text-[var(--panel-text)]' : 'hover:bg-black/15'
               }`}
             >
-              <span
-                className="mr-2 inline-block h-2 w-2 rounded-full"
-                style={{ background: tagColor(tag) }}
-              />
+              <span className="mr-2 inline-block h-2 w-2 rounded-full" style={{ background: tagColor(tag) }} />
               {tag}
             </button>
           </li>
