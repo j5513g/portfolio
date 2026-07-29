@@ -9,7 +9,9 @@ create table journal_posts (
   body text not null,
   image_url text,
   date date not null,
+  date_end date,
   tags text[] not null default '{}',
+  images jsonb not null default '[]',
   created_at timestamptz not null default now()
 );
 

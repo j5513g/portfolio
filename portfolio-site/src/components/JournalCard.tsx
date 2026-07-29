@@ -1,18 +1,16 @@
 import type { JournalPost } from '../lib/supabase'
+import { formatJournalDate, normalizeImages } from '../lib/journal'
 import { tagColor } from '../data/tags'
+import ImageCarousel from './ImageCarousel'
 
 const imageTints = ['#8fa08a', '#c9838d', '#6b8fad', '#cba36a', '#9e3b30']
-
-function formatDate(iso: string) {
-  const d = new Date(iso + 'T12:00:00')
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toLowerCase()
-}
 
 type Props = { post: JournalPost; index: number; expanded?: boolean; onToggle?: () => void }
 
 export default function JournalCard({ post, index, expanded, onToggle }: Props) {
   const tint = imageTints[index % imageTints.length]
   const tilt = index % 2 === 0 ? '-1deg' : '1.2deg'
+  const images = normalizeImages(post)
 
   return (
     <article
@@ -21,25 +19,21 @@ export default function JournalCard({ post, index, expanded, onToggle }: Props) 
       data-cursor="hover"
     >
       <div className="flex flex-col gap-4 sm:flex-row">
-        <div
-          className="photo-grain relative h-36 w-full shrink-0 overflow-hidden rounded-sm border-4 border-white shadow-md transition-transform duration-300 group-hover:scale-105 sm:h-32 sm:w-28"
-          style={{ background: tint }}
-        >
-          {post.image_url && (
-            <img src={post.image_url} alt="" className="h-full w-full object-cover transition-transform duration-300 hover:scale-105" />
-          )}
-        </div>
+        <ImageCarousel
+          images={images}
+          tint={tint}
+          className="h-36 w-full shrink-0 sm:h-32 sm:w-28"
+        />
         <div className="min-w-0 flex-1">
-          <p className="mono mb-1 text-xs text-[var(--muted)]">{formatDate(post.date)}</p>
+          <p className="mono mb-1 text-xs text-[var(--muted)]">{formatJournalDate(post.date, post.date_end)}</p>
+          {images.length > 1 && (
+            <p className="mono mb-1 text-[10px] text-[var(--muted)]">← → arrow keys to browse photos</p>
+          )}
           <h2 className="title-serif mb-2 text-2xl leading-tight">{post.title}</h2>
           <p className={`text-sm leading-relaxed ${expanded ? '' : 'line-clamp-2'}`}>{post.body}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {post.tags.map((tag) => (
-              <span
-                key={tag}
-                className="mono rounded-full px-2 py-0.5 text-xs text-[var(--cream)] transition-transform hover:scale-110"
-                style={{ background: tagColor(tag) }}
-              >
+              <span key={tag} className="mono rounded-full px-2 py-0.5 text-xs text-[var(--cream)] transition-transform hover:scale-110" style={{ background: tagColor(tag) }}>
                 {tag}
               </span>
             ))}

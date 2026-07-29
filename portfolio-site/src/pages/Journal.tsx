@@ -2,7 +2,16 @@ import { useEffect, useMemo, useState } from 'react'
 import FadeIn from '../components/FadeIn'
 import JournalCard from '../components/JournalCard'
 import TagFilter from '../components/TagFilter'
+import { normalizeImages } from '../lib/journal'
 import { supabase, type JournalPost } from '../lib/supabase'
+
+function mapPost(row: Record<string, unknown>): JournalPost {
+  return {
+    ...(row as JournalPost),
+    images: normalizeImages(row as Parameters<typeof normalizeImages>[0]),
+    date_end: (row.date_end as string | null) ?? null,
+  }
+}
 
 export default function Journal() {
   const [posts, setPosts] = useState<JournalPost[]>([])
@@ -13,7 +22,7 @@ export default function Journal() {
   useEffect(() => {
     if (!supabase) { setLoading(false); return }
     supabase.from('journal_posts').select('*').order('date', { ascending: false })
-      .then(({ data }) => { setPosts(data ?? []); setLoading(false) })
+      .then(({ data }) => { setPosts((data ?? []).map(mapPost)); setLoading(false) })
   }, [])
 
   const allTags = useMemo(() => [...new Set(posts.flatMap((p) => p.tags))].sort(), [posts])
